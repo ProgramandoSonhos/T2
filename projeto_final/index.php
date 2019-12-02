@@ -1,6 +1,8 @@
 <?php
   // inclui definicao da funcao conecta()
   require('./conexao.php');
+  // inclui definicao das funcoes de BD
+  require('./queries.php');
   // executa a funcao conecta retornando uma conexao
   $mysqli = conecta();
 
@@ -49,18 +51,10 @@
 
             // só insere se houve postagem
             if($_POST) {
-              // cria query de inserção no banco
-              $query = "INSERT INTO dados_pessoais(nome, nascimento, cpf, estado_civil)
-                        VALUES('$nome', '$nascimento', $cpf, '$estado_civil')";
-              // executa query de inserção no banco
-              mysqli_query($mysqli, $query);
-              // verfica se houve erro
-              if(mysqli_errno($mysqli)) {
-                echo "<b style='color:red'>".mysqli_error($mysqli)."</b><br>";
-              } else {
-                echo "<b style='color:green'>Registro inserido com sucesso!</b><br>";
-              }
+              insereDados($mysqli, $nome, $nascimento, $cpf, $estado_civil);
             }
+
+            $pessoas = recuperaPessoas($mysqli);
 
         ?>
              
@@ -78,7 +72,7 @@
           </p>
           <p>
             <label for="cpf">CPF <span class="asterisco">*</span></label>
-            <input name="cpf" type="text" id="cpf" size="12" maxlength="11" required placeholder="Apenas números">
+            <input name="cpf" type="text" id="cpf" size="12" maxlength="11" required placeholder="___.___.___-__">
           </p>
           <p>
             <label>Estado Civil</label>
@@ -150,41 +144,19 @@
           <th width="5%" scope="col">Inglês </th>
           <th width="5%" scope="col">Informática</th>
         </tr>
+        <?php
+          foreach ($pessoas as $key => $value) {
+        ?>
         <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
+          <td><?= $value['nome'] ?></td>
+          <td><?= $value['nascimento'] ?></td>
           <td>&nbsp;</td>
           <td>S/N</td>
           <td>S/N</td>
         </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
+        <?php
+          }
+        ?>
       </table>
       
       <ul class="paginacao"> <li><<</li> <li class="atual">1</li> <li>2</li> <li>3</li> <li>4</li> <li>5</li> <li>>></li> </ul>
